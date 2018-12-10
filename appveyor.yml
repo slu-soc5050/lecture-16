@@ -48,6 +48,7 @@ build_script:
 
 test_script:
   - Rscript -e "rmarkdown::render('examples/lecture-16.Rmd')"
+  - Rscript -e "rmarkdown::render('assignments/lab-15-replication/docs/lab-15-replication.Rmd')"
 
 on_failure:
   - 7z a failure.zip *.Rcheck\*
