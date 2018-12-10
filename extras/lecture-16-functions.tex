@@ -1,0 +1,85 @@
+\documentclass{tufte-handout}
+
+\usepackage{xcolor}
+
+% set hyperlink attributes
+\hypersetup{colorlinks}
+
+% set image attributes:
+\usepackage{graphicx}
+\graphicspath{ {images/} }
+
+% indent subsections
+\newenvironment{subs}
+  {\adjustwidth{3em}{0pt}}
+  {\endadjustwidth}
+
+
+% ============================================================
+
+% define the title
+\title{SOC 4015/5050: Lecture 16 Functions}
+\author{Christopher Prener, Ph.D.}
+\date{Fall 2018}
+% ============================================================
+\begin{document}
+% ============================================================
+\maketitle % generates the title
+% ============================================================
+
+\vspace{5mm}
+\section{Packages}
+\begin{itemize}
+\item \texttt{janitor}
+\item \texttt{stats}
+\end{itemize}
+
+\vspace{5mm}
+\section{Contingency Tables}
+\begin{subs}
+\subsection{One-way Table}
+\noindent \texttt{janitor::}{\color{red}\texttt{tabyl}}\texttt{(\textit{.data}, \textit{varName})}
+
+\vspace{3mm}
+\subsection{Two-way Table}
+\noindent \texttt{janitor::}{\color{red}\texttt{tabyl}}\texttt{(\textit{.data}, \textit{xvar}, \textit{xvar})}
+
+\vspace{3mm}
+\subsection{Optional Adornment: Adding Totals}
+\noindent \texttt{janitor::}{\color{red}\texttt{adorn\_totals}}\texttt{(where = \textit{position})}\sidenote{Use in a pipeline \textit{after} \texttt{tabyl()} but \textit{before} other adornment functions.}
+
+\vspace{3mm}
+\subsection{Optional Adornment: Adding Percentages}
+\noindent \texttt{janitor::}{\color{red}\texttt{adorn\_percentages}}\texttt{(denominator = \textit{pctType})}\sidenote{Use in a pipeline \textit{after} \texttt{tabyl()} and (if used) \texttt{adorn\_totals()}.}
+
+\vspace{3mm}
+\subsection{Optional Adornment: Adding Percentages}
+\noindent \texttt{janitor::}{\color{red}\texttt{adorn\_pct\_formatting}}\texttt{(digits = \textit{val})}\sidenote{Use in a pipeline \textit{after} \texttt{tabyl()} and (if used) \texttt{adorn\_totals()}.}
+
+\vspace{3mm}
+\subsection{Optional Adornment: Adding Frequencies}
+\noindent \texttt{janitor::}{\color{red}\texttt{adorn\_ns}}\texttt{(position = \textit{position})}\sidenote{Use in a pipeline \textit{after} \texttt{tabyl()} and (if used) \texttt{adorn\_totals()}.}
+\end{subs}
+
+\vspace{5mm}
+\section{Chi-Squared}
+\begin{subs}
+\subsection{Chi-Squared Test}
+\noindent \texttt{stats::}{\color{red}\texttt{chisq.test}}\texttt{(\textit{xvar}, \textit{xvar})}
+
+\vspace{3mm}
+\subsection{Expected Frequencies}
+\noindent \texttt{\textit{modelObj} <- } \texttt{stats::}{\color{red}\texttt{chisq.test}}\texttt{(\textit{xvar}, \textit{xvar})}
+\par \noindent \textit{modelObj}\$expected
+
+\vspace{3mm}
+\subsection{Full Workflow}
+\noindent \texttt{(\textit{modelObj} <- stats::}{\color{red}\texttt{chisq.test}}\texttt{(\textit{xvar}, \textit{xvar}))}
+
+\vspace{3mm}
+\subsection{Fisher's Exact Test}
+\noindent \texttt{stats::}{\color{red}\texttt{fisher.test}}\texttt{(\textit{xvar}, \textit{xvar}, simulate.p.value = TRUE)}
+\end{subs}
+
+% ============================================================
+\end{document}

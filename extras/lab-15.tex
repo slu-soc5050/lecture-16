@@ -1,0 +1,73 @@
+\documentclass{tufte-handout}
+
+\usepackage{xcolor}
+
+% set image attributes:
+\usepackage{graphicx}
+\graphicspath{ {images/} }
+
+% set hyperlink attributes
+\hypersetup{colorlinks}
+
+% create environment for bottom paragraph:
+\newenvironment{bottompar}{\par\vspace*{\fill}}{\clearpage}
+
+\usepackage{enumerate}
+
+% set table attributes
+\usepackage{tabu}
+\usepackage{booktabs}
+
+% ============================================================
+
+% define the title
+\title{SOC 4015/5050: Lab-15 - Chi-Squared}
+\author{Christopher Prener, Ph.D.}
+\date{Fall 2018}
+
+% ============================================================
+
+\begin{document}
+
+% ============================================================
+
+\maketitle % generates the title
+
+% ============================================================
+
+\vspace{5mm}
+\section{Directions}
+Please complete all steps below. All work should be uploaded to your GitHub assignment repository by 4:00pm on Monday, December 17\textsuperscript{th}, 2018. All data can be obtained from the \texttt{testDriveR} package's \texttt{auto17} data set.
+
+\vspace{3mm}
+\section{Data Preparation}
+\begin{enumerate}
+\item Create a new logical variable that is \texttt{TRUE} if the vehicle is a ``German'' vehicle (i.e. one made by BMW, Mercedes, Porsche, and Volkswagen) and \texttt{FALSE} otherwise.
+\item Subset your data so that it contains only the \texttt{id}, your new logical variable, and the \texttt{driveStr} variables.
+\end{enumerate}
+
+\vspace{3mm}
+\section{Create Tables}
+Using the data created in Part 1, answer the following questions. 
+\begin{enumerate}
+\setcounter{enumi}{2}
+\item Create a two-way table of the logical variable you created above and \texttt{driveStr} using \texttt{janitor} that includes 
+\begin{enumerate}
+\item a total row at the bottom and a total column,
+\item properly formatted row percents that are display three decimal places,
+\item and frequency values in the ``front'' position.
+\end{enumerate}
+\end{enumerate}
+
+\vspace{3mm}
+\section{Fit the Chi-Square and Check Assumptions} 
+Using the data created in Part 1, answer the following questions. 
+\begin{enumerate}
+\setcounter{enumi}{3}
+\item Fit and interpret the results of a chi-squared test comparing the relationship of German vehicles to drivetrains. Is there a meaningful relationship between these two variables?
+\item Does this model violate the Cochran conditions assumption?
+\item Regardless of your answer above, fit a Fisher's Exact Test on these same data. Does this change your interpretation of question 6?
+\end{enumerate}
+
+% ============================================================
+\end{document}
