@@ -1,0 +1,84 @@
+---
+title: "Lecture-16 Example Code"
+author: "Christopher Prener, Ph.D."
+date: '(`r format(Sys.time(), "%B %d, %Y")`)'
+output: 
+  github_document: default
+  html_notebook: default 
+---
+
+## Introduction
+This notebook illustrates the code for lecture 16.
+
+## Dependencies
+This notebook requires only three additional package beyond base `R` packages:
+
+```{r load-packages}
+# tidyverse packages
+library(dplyr)        # for pipe operator
+
+# other packages
+library(janitor)      # tables
+library(testDriveR)   # data
+```
+
+## Load Data
+This notebook requires the `auto17` data from `testDriveR`:
+
+```{r load-data}
+autoData <- auto17
+```
+
+## Part 1
+### Questions 1 and 2.
+First, we need to create an indicator for each vehicle that is `TRUE` if it is made by a German manufacturer. Then we want to subset our data so that we have only `id`, `german`, and `driveStr`.
+
+```{r p1}
+autoData %>% 
+  mutate(german = ifelse(mfr == "BMW" | mfr == "Mercedes" | mfr == "Porsche" | 
+                           mfr == "Volkswagen", TRUE, FALSE)) %>%
+  select(id, german, driveStr) -> autoData
+```
+
+## Part 2
+### Question 3
+Next, we need to create a two-way contingency table of our data:
+
+```{r p2}
+autoData %>%
+  tabyl(german, driveStr) %>%
+  adorn_totals(where = c("row", "col")) %>%
+  adorn_percentages(denominator = "row") %>%
+  adorn_pct_formatting(digits = 3) %>%
+  adorn_ns(position = "front")
+```
+
+We can see that a higher proportion of German vehicles are all wheel drive and rear wheel drive (owing to the Porsche sports cars).
+
+## Part 3
+### Question 4
+We want to know if this variance that we observe visually is substantive, so we'll use a chi-square test:
+
+```{r p3-q4}
+(model <- chisq.test(autoData$german, autoData$driveStr))
+```
+
+The chi-square test ($\chi^{2} = 46.827, df = 4, p < .001$) indicates that there is substantial variation in drive train type based on whether or not the car is manufactured in Germany.
+
+### Question 5
+Even though we did not get a warning, we'll check to see whether we've violated the Cochran conditions:
+
+```{r p3-q5}
+model$expected
+```
+
+We can see no values less than 5 (though we come very close with one expected count), meaning we have not violated this assumption.
+
+### Question 6
+Had we violated Cochran conditions, we would have used Fisher's Exact Test to similaute a p-value:
+
+```{r p3-q6}
+fisher.test(autoData$german, autoData$driveStr, simulate.p.value = TRUE)
+```
+
+The Fisher's Exact test (p = .0005) indicates that there is substantial variation in drive train type based on whether or not the car is manufactured in Germany.
