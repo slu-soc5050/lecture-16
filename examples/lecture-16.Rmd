@@ -1,0 +1,124 @@
+---
+title: "Lecture-16 Example Code"
+author: "Christopher Prener, Ph.D."
+date: '(`r format(Sys.time(), "%B %d, %Y")`)'
+output: 
+  github_document: default
+  html_notebook: default 
+---
+
+## Introduction
+This notebook illustrates the code for lecture 16.
+
+## Dependencies
+This notebook requires only three additional package beyond base `R` packages:
+
+```{r load-packages}
+# tidyverse packages
+library(dplyr)        # for pipe operator
+library(ggplot2)      # for mpg data
+
+# other packages
+library(janitor)      # tables
+```
+
+## Load Data
+This notebook requires the `mpg` data from `ggplot2`:
+
+```{r load-data}
+autoData <- mpg
+```
+
+## Contingency Tables
+### Basic Table
+A basic contingency table is called using the `tabyl` function from `janitor`:
+
+```{r contingency-basic}
+autoData %>%
+  tabyl(cyl, drv)
+```
+
+### Adding Totals
+We can add row and column totals with an "adornment" - what `janitor` calls add-ons called after the initial `tabyl` function is called:
+
+```{r contingency-totals}
+autoData %>%
+  tabyl(cyl, drv) %>%
+  adorn_totals(where = c("row", "col"))
+```
+
+### Adding Percentages
+Percentages can be used in place of frequencies by adding a second adornment:
+
+```{r contingency-percents}
+autoData %>%
+  tabyl(cyl, drv) %>%
+  adorn_totals(where = c("row", "col")) %>%
+  adorn_percentages(denominator = "row")
+```
+
+### Formatting Percentages
+Percentages can be formatting by adding another adornment:
+
+```{r contingency-format-percents}
+autoData %>%
+  tabyl(cyl, drv) %>%
+  adorn_totals(where = c("row", "col")) %>%
+  adorn_percentages(denominator = "row") %>%
+  adorn_pct_formatting(digits = 3)
+```
+
+### Adding Frequencies Back In
+What if we want both frequencies and percentages? We can add them back in using a final adornment:
+
+```{r contingency-frequencies}
+autoData %>%
+  tabyl(cyl, drv) %>%
+  adorn_totals(where = c("row", "col")) %>%
+  adorn_percentages(denominator = "row") %>%
+  adorn_pct_formatting(digits = 3) %>%
+  adorn_ns(position = "front")
+```
+
+## Calculating Chi-Squared
+If we want to know if the differences observed between `cyl` and `drv` are substantive - would we see variation this extreme if there were no patterning - we can use the chi-square test. It is helpful to fit the model by wrapping the entire call in `()` so that we can get the model output *and* store the model in an object simultaneously. 
+
+```{r chi-square}
+(model <- chisq.test(mpg$cyl, mpg$drv))
+```
+
+The chi-square test ($\chi^{2} = 98.136, df = 6, p < .001$) indicates that there is substantial variation in cylinders by drive train type.
+
+## Cochran conditions
+Notice that a warning prints with our model output: 
+
+> Chi-squared approximation may be incorrect
+
+This is an indication that we have some issues with the model. *We should explore this assumption anyway even if there is no warning, however.* Our model object contains a matrix with expected values. We want to evaluate them:
+
+```{r expected}
+model$expected
+```
+
+There are three values here that are less than 5 and 3/12 = .25 - this is a sign we've ciolated the Cochran conditions. Furthermore, there is one value below 1, which is a significant concern.
+
+We can neatly summarize this by creating a logical test:
+
+```{r expected-lgl-5}
+model$expected < 5
+```
+
+We can do the same for expected counts less than 1:
+
+```{r expected-lgl-1}
+model$expected < 1
+```
+
+## Fisher's Exact Test
+In the case where we violate Cochran conditions, we can use Fisher's Exact Test to similaute a p-value:
+
+```{r fisher}
+fisher.test(mpg$cyl, mpg$drv, simulate.p.value = TRUE)
+```
+
+The Fisher's Exact test (p = .0005) indicates that there is substantial variation in cylinders by drive train type.
